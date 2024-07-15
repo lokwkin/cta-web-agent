@@ -18,13 +18,11 @@ class ChatGPTInput(BaseModel):
 
 class OpenAIClient():
     def __init__(self):
-        print(os.environ.get("OPENAI_API_KEY"))
         if os.environ.get("OPENAI_PROXY_URL") is not None:
             self.client = OpenAI(
                 api_key=os.environ.get("OPENAI_API_KEY"),
                 http_client=DefaultHttpxClient(
-                    proxies=os.environ.get("OPENAI_PROXY_URL"),
-                    transport=httpx.HTTPTransport(local_address="0.0.0.0"),
+                    proxy=os.environ.get("OPENAI_PROXY_URL"),
                 ),
             )
         else: 
@@ -41,6 +39,8 @@ class OpenAIClient():
 
     def prompt(self, prompt_input: ChatGPTInput):
         try:
+            print(f"[REQUEST] <SYSTEM> {str(prompt_input.system_message)}")
+            print(f"[REQUEST] <PROMPT> {str(prompt_input.prompt)}")
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
@@ -57,8 +57,8 @@ class OpenAIClient():
             print(f"[RESPONSE] {str(json_data)}")
             
             return json_data
-        except json.JSONDecodeError:
-            print("Error: Invalid JSON response")
+        except json.JSONDecodeError as e:
+            print(f"[ERROR] JSONDecodeError {str(e)}")
             return None
         except Exception as e:
             print(f"An error occurred: {str(e)}")

@@ -1,5 +1,6 @@
 playwright
 plotly
-mastache
+pystache
 markdownify
 openai
+python-dotenv

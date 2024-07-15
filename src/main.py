@@ -9,41 +9,32 @@ load_dotenv()
 
 def run(url: str, playwright: Playwright):
     
-    ts = int(time.time())
+    # ts = int(time.time())
     
-    browser = playwright.chromium.launch(headless=False)
+    browser = playwright.chromium.launch(headless=False, executable_path='/Users/kelvinwong/Library/Caches/ms-playwright/chromium-1055/chrome-mac/Chromium.app/Contents/MacOS/Chromium')
     page = browser.new_page()
 
     page.goto(url)
-    page.wait_for_load_state('networkidle')
-    
-    with open(f"./outputhtml/{ts}.html", "w") as htmlfile:
-        htmlfile.write(page.content())            
+    page.wait_for_load_state('networkidle')         
 
     # Assign unique ctaid to all elements
     convert.dom_assign_ctaid(page)
 
     # Convert the page to markdown preserving neccessary elements
     markdown = convert.convert_to_markdown(page)
-
     print(f"\n\n{markdown}\n\n")
 
-    # Generate a response from the OpenAI API
-    result = OpenAIClient().prompt_templated('action', {'markdown': markdown, 'task': 'view the tnc'})
+    # Prompt LLM for next action
+    result = OpenAIClient().prompt_templated('action', {'markdown': markdown, 'task': 'Sign in to the platform'})
     if result is None:
         raise Exception("Error: Invalid response from OpenAI API")
-
     print(result)
 
-    page.locator(f"[ctaid=\"{result['ctaid']}\"]")
-
+    # Perform action accordingly to the response
     target = page.locator(f"[ctaid=\"{result['ctaid']}\"]")
-    
-    print(target.inner_html())
     target.click()
-
-    # Close the browser
-    # browser.close()
+    page.wait_for_load_state('networkidle')
+    page.pause()
 
 if __name__ == "__main__":
 
