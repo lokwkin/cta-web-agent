@@ -2,19 +2,17 @@ from dataclasses import dataclass
 from typing import Optional
 import os
 import json
-import httpx
 from pydantic import BaseModel, Field
 from typing import Optional
 from openai import OpenAI, DefaultHttpxClient
 import pystache
 
-class ChatGPTInput(BaseModel):
+class LLMInput(BaseModel):
     prompt: str
     max_tokens: int = 512
     temperature: float = 0.1
     model: str = "gpt-3.5-turbo"
     system_message: Optional[str] = "You are a helpful assistant. Please respond with valid JSON only."
-
 
 class OpenAIClient():
     def __init__(self):
@@ -34,10 +32,10 @@ class OpenAIClient():
         with open(f"./src/models/prompts/{template}.txt", "r") as file:
             template = file.read()
             [system_message, user_message] = pystache.render(template, params).split('!!----SEPERATOR----!!')
-            result = self.prompt(ChatGPTInput(prompt=user_message, system_message=system_message))
+            result = self.prompt(LLMInput(prompt=user_message, system_message=system_message))
         return result
 
-    def prompt(self, prompt_input: ChatGPTInput):
+    def prompt(self, prompt_input: LLMInput):
         try:
             print(f"[REQUEST] <SYSTEM> {str(prompt_input.system_message)}")
             print(f"[REQUEST] <PROMPT> {str(prompt_input.prompt)}")
