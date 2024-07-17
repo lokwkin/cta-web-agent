@@ -8,6 +8,7 @@ from typing import Optional
 from openai import OpenAI, DefaultHttpxClient
 import pystache
 import logging
+import os
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -40,11 +41,20 @@ class OpenAIClient():
                 api_key=os.environ.get("OPENAI_API_KEY"),
             )
 
+        # Preload all templates from the prompts folder
+        self.templates: dict[str, str] = {}
+        for filename in os.listdir('./src/models/prompts/'):
+            if filename.endswith(".txt"):
+                with open(f"./src/models/prompts/{filename}", "r") as file:
+                    self.templates[filename] = file.read()
+        
+
     def prompt_templated(self, template: str, params: dict):
-        with open(f"./src/models/prompts/{template}.txt", "r") as file:
-            template = file.read()
-            [system_message, user_message] = pystache.render(template, params).split('!!----SEPERATOR----!!')
-            result = self.prompt(LLMInput(prompt=user_message, system_message=system_message))
+        if self.templates.get(template) is None:
+            raise Exception(f"Template {template} not found")
+
+        [system_message, user_message] = pystache.render(template, params).split('!!----SEPERATOR----!!')
+        result = self.prompt(LLMInput(prompt=user_message, system_message=system_message))
         return result
 
     def prompt(self, prompt_input: LLMInput) -> ReActOutput:
