@@ -5,8 +5,11 @@ the functions in any sequence you deem appropriate to complete the task at hand.
 This may require breaking the task into subtasks and invoking different functions
 to complete each subtasks.
 
+Each action can ONLY interacts with one element.
+
 ## Available functions
 - CLICK(element_id: str) # click on a button or a link
+- TYPE(element_id: str, text: str) # type text in an input box
 - FINISH(result: optional[str]) # you obtained a result (if any) from the page. Finish and submit.
 
 ## Output format 
@@ -47,8 +50,7 @@ Example of completion with fail:
     "action": "FINISH",
 }
 
-
-Please ALWAYS start with a Thought.
+Please ALWAYS start with a Thought. 
 
 If this format is used, the user will provide you past actions performed, and a new Markdown converted from the HTML of the latest screen shown after the action is performed.
 

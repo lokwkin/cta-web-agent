@@ -8,40 +8,54 @@ import uuid
 from collections import defaultdict
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
 
-
 def dom_assign_element_id(page: Page):
     def generate_unique_id():
         return f"{uuid.uuid4().hex[:8]}"   
     
-    for cta in page.locator('link').all():
+    for cta in page.get_by_role('link').all():
         cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
 
-    for cta in page.locator('a').all():
+    # for cta in page.locator('a').all():
+    #     cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
+
+    for cta in page.get_by_role('button').all():
         cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
 
-    for cta in page.locator('button').all():
+    for cta in page.get_by_role('textbox').all():
         cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
 
 def convert_to_markdown(page: Page):
 
     class CTAMarkdownConverter(MarkdownConverter):
         def convert_button(self, el: Tag, text, convert_as_inline):
-            desc = f"{el.text.strip() if len(el.text.strip()) > 0 else ','.join([img.attrs['alt'] for img in el.find_all('img')])}"
-            return f"[{desc}](Button)<{el.attrs['element_id']}>\n\n"
+            if 'element_id' not in el.attrs:
+                return ''
+            representation = f"{el.text.strip() if len(el.text.strip()) > 0 else ','.join([img.attrs['alt'] for img in el.find_all('img')])}"
+            return f"[{representation}](Button)<{el.attrs['element_id']}>\n\n"
         
         def convert_img(self, el, text, convert_as_inline):
+            # NOT converting images into markdown, as we are only interested in text
             return ''
         
         def convert_a(self, el: Tag, text, convert_as_inline):
+            if 'element_id' not in el.attrs:
+                return super().convert_a(el, text, convert_as_inline)
             return super().convert_a(el, text, convert_as_inline) + f"<{el.attrs['element_id']}>\n\n"
+        
+        def should_convert_tag(self, tag):
+            if tag in ['a', 'button', 'input']:
+                return True
+            return super().should_convert_tag(tag)
+        
+        def convert_input(self, el, text, convert_as_inline):
+            if 'element_id' not in el.attrs:
+                return ''
+            representation = el.attrs['placeholder'] if 'placeholder' in el.attrs else el.text.strip() if len(el.text.strip()) > 0 else ''
+            return f"[{representation}]({el.attrs['type']})<{el.attrs['element_id']}>\n\n"
         
     markdown = CTAMarkdownConverter().convert(page.content())
 
     return markdown.strip()
-
-
-
-
 
 
 def plot_dom_tree(node: Tag):

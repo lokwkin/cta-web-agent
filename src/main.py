@@ -41,23 +41,36 @@ def run(url: str, task: str, playwright: Playwright):
         # Perform action accordingly to the response
         logger.debug(f"[Browser] Performing action: {result.action}")
         if result.action == 'CLICK':
+            # Locate the element
             logger.info(f"[Browser] Locating element_id: {result.action_params['element_id']}")
             target = page.locator(f"[element_id=\"{result.action_params['element_id']}\"]")
-            logger.info(f"[Browser] {(target.first.evaluate('el => el.outerHTML') )}")
+            logger.info(f"[Browser] Found element: {(target.first.evaluate('el => el.outerHTML') )}")
+
+            # Click the element
             target.click()
+
+            # Wait for the browser to load react
             logger.info(f"[Browser] Clicked, awaiting browser load...")
             page.wait_for_timeout(3000)
-            # page.wait_for_load_state('networkidle')
-        elif result.action == 'FOCUS':
-            logger.info(f"[Browser] Focus in the text: {result.action_params['text']}")
+
+        elif result.action == 'TYPE':
+            # Locate the element
+            logger.info(f"[Browser] Locating element_id: {result.action_params['element_id']}")
+            target = page.locator(f"[element_id=\"{result.action_params['element_id']}\"]")
+            logger.info(f"[Browser] Found element: {(target.first.evaluate('el => el.outerHTML') )}")
+
+            # Type the text
+            target.type(result.action_params['text'])
+
+            # Wait for the browser to load react
+            logger.info(f"[Browser] Typed, awaiting browser load...")
+            page.wait_for_timeout(3000)
 
         elif result.action == 'FINISH':
             logger.info(f"Finishing the task with output {str(result.action_params['output'])}")
             break
         
         action_history.append({"thought": result.thought, "action": result.action})
-
-        # time.sleep(1)
 
     # Do not auto close the broser
     page.pause()
