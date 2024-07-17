@@ -20,7 +20,9 @@ class LLMInput(BaseModel):
     system_message: Optional[str] = "You are a helpful assistant. Please respond with valid JSON only."
     
 class ReActOutput(BaseModel):
+    situation: str
     thought: str
+    expectation: str
     action: str
     action_params: dict
 
@@ -47,7 +49,7 @@ class OpenAIClient():
 
     def prompt(self, prompt_input: LLMInput) -> ReActOutput:
         try:
-            logger.info(f"{Fore.GREEN}[system_prompt] {json.dumps(prompt_input.system_message)}{Style.RESET_ALL}")
+            logger.debug(f"{Fore.GREEN}[system_prompt] {json.dumps(prompt_input.system_message)}{Style.RESET_ALL}")
             logger.info(f"{Fore.CYAN}[user_prompt] {json.dumps(prompt_input.prompt)}{Style.RESET_ALL}")
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
@@ -64,6 +66,8 @@ class OpenAIClient():
             json_data = json.loads(response.choices[0].message.content)
             
             thought_action = ReActOutput(**json_data)
+            
+            logger.info(f"{Fore.BLUE}[ReActOutput] {str(thought_action)}{Style.RESET_ALL}")
             
             return thought_action
         except json.JSONDecodeError as e:

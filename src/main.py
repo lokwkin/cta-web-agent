@@ -24,37 +24,40 @@ def run(url: str, task: str, playwright: Playwright):
     action_history = []
     while True:
         # Assign unique element_id to all elements
-        logging.debug('[Controller] Assigning Element IDs to DOM')
+        logger.debug('[Controller] Assigning Element IDs to DOM')
         page_reader.dom_assign_element_id(page)
 
         # Convert the page to markdown preserving neccessary elements
-        logging.debug('[Controller] Converting HTML to Markdown...')
+        logger.debug('[Controller] Converting HTML to Markdown...')
         markdown = page_reader.convert_to_markdown(page)
 
         # Prompt LLM for next action
-        logging.debug('[Controller] Prompting LLM for next action...')
+        logger.debug('[Controller] Prompting LLM for next action...')
         result = OpenAIClient().prompt_templated('action', {'markdown': markdown, 'task': task, 'action_history': action_history})
-        logging.info(f'[Controller] Result from LLM: {str(result)}')
+        logger.info(f'[Controller] Result from LLM: {str(result)}')
         if result is None:
             raise Exception("Error: Invalid response from OpenAI API")
 
         # Perform action accordingly to the response
-        logging.debug(f"[Browser] Performing action: {result.action}")
+        logger.debug(f"[Browser] Performing action: {result.action}")
         if result.action == 'CLICK':
-            logging.info(f"[Browser] Locating element_id: {result.action_params['element_id']}")
+            logger.info(f"[Browser] Locating element_id: {result.action_params['element_id']}")
             target = page.locator(f"[element_id=\"{result.action_params['element_id']}\"]")
-            logging.info(f"[Browser] {str(target.first)}")
+            logger.info(f"[Browser] {(target.first.evaluate('el => el.outerHTML') )}")
             target.click()
-            logging.info(f"[Browser] Clicked, awaiting browser load...")
-            page.wait_for_load_state('networkidle')
+            logger.info(f"[Browser] Clicked, awaiting browser load...")
+            page.wait_for_timeout(3000)
+            # page.wait_for_load_state('networkidle')
+        elif result.action == 'FOCUS':
+            logger.info(f"[Browser] Focus in the text: {result.action_params['text']}")
 
         elif result.action == 'FINISH':
-            logging.info(f"Finishing the task with output {str(result.action_params['output'])}")
+            logger.info(f"Finishing the task with output {str(result.action_params['output'])}")
             break
         
         action_history.append({"thought": result.thought, "action": result.action})
 
-        time.sleep(1)
+        # time.sleep(1)
 
     # Do not auto close the broser
     page.pause()
