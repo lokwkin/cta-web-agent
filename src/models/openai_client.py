@@ -46,14 +46,17 @@ class OpenAIClient():
         for filename in os.listdir('./src/models/prompts/'):
             if filename.endswith(".txt"):
                 with open(f"./src/models/prompts/{filename}", "r") as file:
-                    self.templates[filename] = file.read()
+                    logger.info(f"Loading template: {filename[:-4]}")
+                    self.templates[filename[:-4]] = file.read()
         
 
     def prompt_templated(self, template: str, params: dict):
-        if self.templates.get(template) is None:
+        logger.info('self.templates' + str(self.templates))
+        content = self.templates.get(template)
+        if content is None:
             raise Exception(f"Template {template} not found")
 
-        [system_message, user_message] = pystache.render(template, params).split('!!----SEPERATOR----!!')
+        [system_message, user_message] = pystache.render(content, params).split('!!----SEPERATOR----!!')
         result = self.prompt(LLMInput(prompt=user_message, system_message=system_message))
         return result
 
