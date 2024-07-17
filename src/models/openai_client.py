@@ -1,3 +1,4 @@
+from colorama import Fore, Style
 from dataclasses import dataclass
 from typing import Optional
 import os
@@ -6,6 +7,10 @@ from pydantic import BaseModel, Field
 from typing import Optional
 from openai import OpenAI, DefaultHttpxClient
 import pystache
+import logging
+
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 class LLMInput(BaseModel):
     prompt: str
@@ -13,6 +18,11 @@ class LLMInput(BaseModel):
     temperature: float = 0.1
     model: str = "gpt-3.5-turbo"
     system_message: Optional[str] = "You are a helpful assistant. Please respond with valid JSON only."
+    
+class ReActOutput(BaseModel):
+    thought: str
+    action: str
+    action_params: dict
 
 class OpenAIClient():
     def __init__(self):
@@ -35,10 +45,10 @@ class OpenAIClient():
             result = self.prompt(LLMInput(prompt=user_message, system_message=system_message))
         return result
 
-    def prompt(self, prompt_input: LLMInput):
+    def prompt(self, prompt_input: LLMInput) -> ReActOutput:
         try:
-            print(f"[REQUEST] <SYSTEM> {str(prompt_input.system_message)}")
-            print(f"[REQUEST] <PROMPT> {str(prompt_input.prompt)}")
+            logger.info(f"{Fore.GREEN}[system_prompt] {json.dumps(prompt_input.system_message)}{Style.RESET_ALL}")
+            logger.info(f"{Fore.CYAN}[user_prompt] {json.dumps(prompt_input.prompt)}{Style.RESET_ALL}")
             response = self.client.chat.completions.create(
                 model="gpt-3.5-turbo",
                 messages=[
@@ -49,15 +59,16 @@ class OpenAIClient():
                 temperature=prompt_input.temperature,
                 max_tokens=prompt_input.max_tokens,
             )
+            logger.info(f"{Fore.BLUE}[response] {str(response)}{Style.RESET_ALL}")
 
             json_data = json.loads(response.choices[0].message.content)
-
-            print(f"[RESPONSE] {str(json_data)}")
             
-            return json_data
+            thought_action = ReActOutput(**json_data)
+            
+            return thought_action
         except json.JSONDecodeError as e:
-            print(f"[ERROR] JSONDecodeError {str(e)}")
+            logger.error(f"JSONDecodeError: {str(e)}")
             return None
         except Exception as e:
-            print(f"An error occurred: {str(e)}")
+            logger.error(f"An error occurred: {str(e)}")
             return None

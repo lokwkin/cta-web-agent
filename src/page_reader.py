@@ -9,35 +9,35 @@ from collections import defaultdict
 from bs4 import BeautifulSoup, Comment, Tag, NavigableString
 
 
-def dom_assign_ctaid(page: Page):
+def dom_assign_element_id(page: Page):
     def generate_unique_id():
         return f"{uuid.uuid4().hex[:8]}"   
     
     for cta in page.locator('link').all():
-        cta.evaluate(f"el => el.setAttribute('ctaid', '{generate_unique_id()}')")
+        cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
 
     for cta in page.locator('a').all():
-        cta.evaluate(f"el => el.setAttribute('ctaid', '{generate_unique_id()}')")
+        cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
 
     for cta in page.locator('button').all():
-        cta.evaluate(f"el => el.setAttribute('ctaid', '{generate_unique_id()}')")
+        cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
 
 def convert_to_markdown(page: Page):
 
     class CTAMarkdownConverter(MarkdownConverter):
         def convert_button(self, el: Tag, text, convert_as_inline):
             desc = f"{el.text.strip() if len(el.text.strip()) > 0 else ','.join([img.attrs['alt'] for img in el.find_all('img')])}"
-            return f"[{desc}](Button)<{el.attrs['ctaid']}>\n\n"
+            return f"[{desc}](Button)<{el.attrs['element_id']}>\n\n"
         
         def convert_img(self, el, text, convert_as_inline):
             return ''
         
         def convert_a(self, el: Tag, text, convert_as_inline):
-            return super().convert_a(el, text, convert_as_inline) + f"<{el.attrs['ctaid']}>\n\n"
+            return super().convert_a(el, text, convert_as_inline) + f"<{el.attrs['element_id']}>\n\n"
         
     markdown = CTAMarkdownConverter().convert(page.content())
 
-    return markdown
+    return markdown.strip()
 
 
 
@@ -45,7 +45,6 @@ def convert_to_markdown(page: Page):
 
 
 def plot_dom_tree(node: Tag):
-    print('-----')
     def traverse(element: Tag, parent_id):
         node_id = f"{element.name}_{id(element)}"
         tree_data['ids'].append(node_id)
@@ -131,8 +130,8 @@ def process_html(html) -> str:
 
     for tag in soup.html.find_all():
         if isinstance(tag, Tag) and tag.name in ['a', 'button']:
-            if 'ctaid' not in tag.attrs:
-                tag['ctaid'] = generate_unique_id()
+            if 'element_id' not in tag.attrs:
+                tag['element_id'] = generate_unique_id()
             
     # tree = filter_branches(tree)
     # tree_data = plot_dom_tree(tree)
