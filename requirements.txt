@@ -1,6 +1,7 @@
-playwright
-plotly
-pystache
-markdownify
-openai
-python-dotenv
+playwright==1.45.0
+plotly==5.22.0
+pystache==0.6.5
+markdownify==0.12.1
+openai==1.35.13
+python-dotenv==1.0.1
+colorama==0.4.6
