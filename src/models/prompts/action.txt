@@ -8,11 +8,12 @@ to complete each subtasks.
 You must only respond in JSON format that adheres to the following schema:
 <json_schema>
 {
-    "situation": str, # what page are you in now, 
+    "situation": str, # what page are you in now
+    "options": str, # options you have now in the page
     "thought": str, # why do you choose this action
-    "expectation": str, what do you expect to happen next
     "action": str,  # the action you chose to perform, in function signature format
     "action_params": the argument to the action function, in a JSON format representing the kwargs (e.g. {"input": "hello world", "num_beams": 5})
+    "action_desc": str, # short description of the action
 }
 </json_schema>
 
@@ -21,36 +22,39 @@ Each action can ONLY interacts with one element.
 ## Available functions
 - CLICK(element_id: str) # click on an element
 - TYPE(element_id: str, text: str, press_enter: boolean) # type text in an input box
-- FINISH(result: optional[str]) # you obtained a result (if any) from the page. Finish and submit.
+- FINISH(result: optional[str]) # you already finished the task and submit result if any.
 
 Example of intermdiate point:
 {
     "situation": "I am in the home page of the site", 
+    "options": "a link to view the TNC, a button to login",
     "thought": "I want to view the TNC",
-    "expectation": "I expect I will be directed to the terms and condition page",
     "action": "CLICK",
-    "action_params": {"element_id": "element_id_of_tnc_button"}
+    "action_params": {"element_id": "element_id_of_tnc_button"},
+    "action_desc": "click the tnc button" # short description of the action
 }
 
 Example of completion with result:
 {
     "situation": "I am in the article content",
+    "options": null,
     "thought": "I have located the information",
-    "expectation": null,
     "action": "FINISH",
     "action_params": {"result": "The number you are looking for is 582956."}
+    "action_desc": "finish with output"
 }
 
 Example of completion with fail:
 {
     "situation": "I am in a dead-loop",
+    "options": null,
     "thought": "I cannot complete the task with the provided functions",
-    "expectation": null,
     "action": "FINISH",
-    "action_params": {}
+    "action_params": {},
+    "action_desc": "finish"
 }
 
-Please ALWAYS start with a Thought. 
+ALWAYS read the action history, then check if task is finished, then start with situation.
 
 If this format is used, the user will provide you past actions performed, and a new Markdown converted from the HTML of the latest screen shown after the action is performed.
 

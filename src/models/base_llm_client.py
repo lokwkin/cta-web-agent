@@ -34,13 +34,14 @@ class LLMResponse(BaseModel):
     
 class ReActOutput(BaseModel):
     situation: Optional[str]
+    options: Optional[str]
     thought: Optional[str]
-    expectation: Optional[str]
     action: str
     action_params: Optional[dict]
+    action_desc: Optional[str]
 
 class BaseLLMClient():
-    def __init__(self):
+    def __init__(self, log_path: str = './prompt_logs'):
         # Preload all templates from the prompts folder
         self.templates: dict[str, str] = {}
         for filename in os.listdir('./src/models/prompts/'):
@@ -48,6 +49,10 @@ class BaseLLMClient():
                 with open(f"./src/models/prompts/{filename}", "r") as file:
                     logger.info(f"Loading template: {filename[:-4]}")
                     self.templates[filename[:-4]] = file.read()
+                    
+        self.log_path = log_path
+        if not os.path.exists(log_path):
+            os.makedirs(log_path)
 
     def prompt_templated(self, template: str, params: dict):
         content = self.templates.get(template)
@@ -65,7 +70,7 @@ class BaseLLMClient():
     def prompt(self, prompt_input: LLMInput) -> ReActOutput:
         try:
             log_filename = str(int(time.time())) + (f"_{prompt_input.log_identifier}" if prompt_input.log_identifier is not None else '')  + ".log"
-            with open(f"./prompt_logs/{log_filename}", 'w') as f:
+            with open(f"{self.log_path}/{log_filename}", 'w') as f:
                 f.write(prompt_input.user_message)
                 
                 logger.debug(f"{Fore.GREEN}[system_message] {json.dumps(prompt_input.system_message)}{Style.RESET_ALL}")
@@ -77,13 +82,17 @@ class BaseLLMClient():
                 f.write("\n\n>>>>>>>>>>>>>>>> LLM RESPONSE >>>>>>>>>>>>>>>>\n\n")
                 f.write(llm_response.raw_response)
 
-                json_data = json_repair.loads(llm_response.raw_response)
-                thought_action = ReActOutput(**json_data)
-            
+            try:
+                response_dict = json.loads(llm_response.raw_response)
+            except json.JSONDecodeError as e:
+                response_dict = json_repair.loads(llm_response.raw_response)
+                if response_dict == '': # failed to fix json
+                    raise e
+
+            logger.info(f"{Fore.YELLOW}[response_parsed]: {str(response_dict)}{Fore.RESET}")
+            thought_action = ReActOutput(**response_dict)
+                
             return thought_action
-        except json.JSONDecodeError as e:
-            logger.error(f"JSONDecodeError: {str(e)}")
-            return None
         except Exception as e:
             logger.error(f"An error occurred: {str(e)}")
-            return None
+            raise e

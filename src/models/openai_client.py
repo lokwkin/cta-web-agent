@@ -10,8 +10,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
 class OpenAIClient(BaseLLMClient):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, log_path: str = './prompt_logs'):
+        super().__init__(log_path)
         if os.environ.get("OPENAI_PROXY_URL") is not None:
             self.client = OpenAI(
                 api_key=os.environ.get("OPENAI_API_KEY"),
@@ -36,9 +36,14 @@ class OpenAIClient(BaseLLMClient):
                 temperature=prompt_input.temperature,
                 max_tokens=prompt_input.max_tokens,
             )
+        
+        response_fix = response.choices[0].message.content
+        if not response_fix.startswith('{'):
+            response_fix = '{' + response_fix
+            
         return LLMResponse(
             request=prompt_input,
-            raw_response=response.choices[0].message.content,
+            raw_response=response_fix,
             time_used=time.time() - ts,
             usage=LLMTokenUsage(
                 input_token=response.usage.prompt_tokens,

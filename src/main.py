@@ -4,6 +4,7 @@ from dotenv import load_dotenv
 from models.openai_client import OpenAIClient
 from browser_controller import BrowserController
 import argparse
+import utils
 import logging
 
 logger = logging.getLogger(__name__)
@@ -13,12 +14,12 @@ load_dotenv()
 
 def run(url: str, task: str, playwright):
     
-    llm_client = OpenAIClient()
+    llm_client = OpenAIClient(log_path=f"./prompt_logs/{utils.normalize_url(url)}")
     
     # Setup    
     browser = playwright.chromium.launch(headless=False)
     browserctl = BrowserController(browser)
-    action_history = []
+    action_histories = []
 
     # Start navigation
     browserctl.navigate(url)
@@ -28,11 +29,11 @@ def run(url: str, task: str, playwright):
 
         # Prompt LLM for next action
         logger.debug('Prompting LLM for next action...')
-        todo = llm_client.prompt_templated('action', {'markdown': markdown, 'task': task, 'action_history': action_history})
-        if todo is None:
-            raise Exception("Error: Invalid response from OpenAI API")
-        logger.info(f"{Fore.YELLOW}Result from LLM: {str(todo.model_dump())}{Fore.RESET}")
-
+        
+        action_histories_dict = [h.action_desc for h in action_histories]
+        
+        todo = llm_client.prompt_templated('action', {'markdown': markdown, 'task': task, 'action_history': action_histories_dict})
+        
 
         # Perform action according to the response
         if todo.action == 'FINISH':
@@ -42,7 +43,7 @@ def run(url: str, task: str, playwright):
         browserctl.digest_action(todo)
         
         # Memorize the action performed
-        action_history.append(todo)
+        action_histories.append(todo)
 
 if __name__ == "__main__":
 
@@ -55,4 +56,3 @@ if __name__ == "__main__":
     
     with sync_playwright() as playwright:
         run(args.url, args.task, playwright)
-    
