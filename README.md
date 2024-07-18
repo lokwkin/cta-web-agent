@@ -10,6 +10,33 @@ Therefore, this project aims to reduce both cost and processing time. Instead of
 
 ## Usage
 ```
+pip install -r requirements.txt
+
 export OPENAI_API_KEY=<OPENAI_API_KEY>
-python src/main.py https://github.com 'Search for most starred AI agent repository'
+python src/main.py https://github.com 'Check the price per month for a team plan'
 ```
+
+## TODOssss 
+- Models & Prompting
+    - Preprocess
+        - Masking out too detailed text for smaller prompt input
+        - Re-construct of HTML to markdown
+    - Models adaption
+        - Groq client
+        - Ollama client / Other smaller size models
+    - Prompting improve
+        - Separate understanding of page and decision making
+        - Auto fixing json
+        - Apply Tree of Thought
+- Browser interaction
+    - Support more input types (dropdown / checkbox / radio button)
+    - Support hovering
+    - Allow specific URL navigation as an action
+    - Explicitly handle google search as an action
+    - Inspect specific element to get more detail
+    - Captcha handling
+- Engineering
+    - Dockerize for easy deployment
+    - Simple frontend to control
+- Testing
+    - Apply evalautions like "WebArena" / "AutoWebBench"
