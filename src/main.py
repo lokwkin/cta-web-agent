@@ -13,6 +13,8 @@ load_dotenv()
 
 def run(url: str, task: str, playwright):
     
+    llm_client = OpenAIClient()
+    
     # Setup    
     browser = playwright.chromium.launch(headless=False)
     browserctl = BrowserController(browser)
@@ -26,7 +28,7 @@ def run(url: str, task: str, playwright):
 
         # Prompt LLM for next action
         logger.debug('Prompting LLM for next action...')
-        todo = OpenAIClient().prompt_templated('action', {'markdown': markdown, 'task': task, 'action_history': action_history})
+        todo = llm_client.prompt_templated('action', {'markdown': markdown, 'task': task, 'action_history': action_history})
         if todo is None:
             raise Exception("Error: Invalid response from OpenAI API")
         logger.info(f"{Fore.YELLOW}Result from LLM: {str(todo.model_dump())}{Fore.RESET}")

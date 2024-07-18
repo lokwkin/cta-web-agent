@@ -19,8 +19,8 @@ You must only respond in JSON format that adheres to the following schema:
 Each action can ONLY interacts with one element.
 
 ## Available functions
-- CLICK(element_id: str) # click on a button or a link
-- TYPE(element_id: str, text: str) # type text in an input box
+- CLICK(element_id: str) # click on an element
+- TYPE(element_id: str, text: str, press_enter: boolean) # type text in an input box
 - FINISH(result: optional[str]) # you obtained a result (if any) from the page. Finish and submit.
 
 Example of intermdiate point:
@@ -56,8 +56,7 @@ If this format is used, the user will provide you past actions performed, and a 
 
 ### Markdown remarks
 - This markdown preserves the texts shown in the HTML in order.
-- This markdown specifies Buttons in the format `[some texts](Button)`.
-- This markdown specifies the element ID that you may interact with, specified in `<element_id>` following a Button or a Link.
+- This markdown specifies interactive element in the format `[representation of the element](element_type)<element_id>`.
 ```
 <task>
 the task 
@@ -73,17 +72,19 @@ markdown content
 ```
 
 You should keep repeating the above format until you finished the task.
-!!----SEPERATOR----!!
+
+>>>>>>>>>>>>>>>> PROMPT_SEPERATOR >>>>>>>>>>>>>>>>
+
 <task>
-{{task}}
+{{{task}}}
 </task>
 
 <action_history>
 {{#action_history}}
-{{.}}
+{{{.}}}
 {{/action_history}}
 </action_history>
 
 <markdown>
-{{markdown}}
+{{{markdown}}}
 </markdown>
