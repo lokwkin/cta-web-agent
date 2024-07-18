@@ -16,7 +16,8 @@ export OPENAI_API_KEY=<OPENAI_API_KEY>
 python src/main.py https://github.com 'Check the price per month for a team plan'
 ```
 
-## TODOssss 
+## TODOssss (welcome any comments, suggestions or even contributions!)
+- Keep developing until it's able to run all the target test tasks I have on hand :D
 - Models & Prompting
     - Preprocess
         - Masking out too detailed text for smaller prompt input
@@ -40,3 +41,4 @@ python src/main.py https://github.com 'Check the price per month for a team plan
     - Simple frontend to control
 - Testing
     - Apply evalautions like "WebArena" / "AutoWebBench"
+
