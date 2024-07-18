@@ -1,11 +1,11 @@
+from typing import Literal
 from playwright.sync_api import Page, Browser
 from bs4 import Tag
 from colorama import Fore, Style
 from markdownify import markdownify as md, MarkdownConverter
 import uuid
 import logging
-
-from models.openai_client import ReActOutput
+from models.base_llm_client import ReActOutput
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -34,7 +34,6 @@ class BrowserController:
         logger.debug(f"Converting HTML to Markdown...")
         markdown = self._convert_to_markdown()
         return markdown
-        
 
     def digest_action(self, action: ReActOutput):
         logger.debug(f"Performing action: {action.action}")
@@ -59,6 +58,9 @@ class BrowserController:
 
             # Type the text
             target.type(action.action_params['text'])
+            
+            if action.action_params.get('press_enter', False):
+                target.press('Enter')
 
             # Wait for the browser to load react
             logger.info(f"Typed, awaiting browser load...")
@@ -71,26 +73,38 @@ class BrowserController:
         def generate_unique_id():
             return f"{uuid.uuid4().hex[:8]}"   
         
-        for cta in self.page.get_by_role('link').all():
-            cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
-
-        # for cta in page.locator('a').all():
-        #     cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
-
-        for cta in self.page.get_by_role('button').all():
-            cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
-
-        for cta in self.page.get_by_role('textbox').all():
-            cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
-
+        for role in ["search", "searchbox", "textbox", "button", "textbox", "link"]:
+            for cta in self.page.get_by_role(role).all():
+                cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
+                
+        for tag in ["textarea"]:
+            for cta in self.page.locator(f"{tag}").all():
+                cta.evaluate(f"el => el.setAttribute('element_id', '{generate_unique_id()}')")
+            
     def _convert_to_markdown(self):
 
         class CTAMarkdownConverter(MarkdownConverter):
+            
+            def get_element_representation(self, el: Tag):
+                if 'aria-label' in el.attrs:
+                    return el.attrs['aria-label']
+                if 'placeholder' in el.attrs:
+                    return el.attrs['placeholder']
+                if len(el.text.strip()) > 0:
+                    return el.text.strip()
+                if len(el.find_all('img')) > 0:
+                    return ','.join([img.attrs['alt'] for img in el.find_all('img')])
+                return None
+                
+            def should_convert_tag(self, tag: str):
+                if tag in ['a', 'button', 'input', 'textarea']:
+                    return True
+                return super().should_convert_tag(tag)
+            
             def convert_button(self, el: Tag, text, convert_as_inline):
                 if 'element_id' not in el.attrs:
                     return ''
-                representation = f"{el.text.strip() if len(el.text.strip()) > 0 else ','.join([img.attrs['alt'] for img in el.find_all('img')])}"
-                return f"[{representation}](Button)<{el.attrs['element_id']}>\n\n"
+                return f"[{self.get_element_representation(el)}](Button)<{el.attrs['element_id']}>\n\n"
             
             def convert_img(self, el, text, convert_as_inline):
                 # NOT converting images into markdown, as we are only interested in text
@@ -101,16 +115,17 @@ class BrowserController:
                     return super().convert_a(el, text, convert_as_inline)
                 return super().convert_a(el, text, convert_as_inline) + f"<{el.attrs['element_id']}>\n\n"
             
-            def should_convert_tag(self, tag: Tag):
-                if tag in ['a', 'button', 'input']:
-                    return True
-                return super().should_convert_tag(tag)
-            
             def convert_input(self, el: Tag, text, convert_as_inline):
                 if 'element_id' not in el.attrs:
                     return ''
-                representation = el.attrs['placeholder'] if 'placeholder' in el.attrs else el.text.strip() if len(el.text.strip()) > 0 else ''
-                return f"[{representation}]({el.attrs['type']})<{el.attrs['element_id']}>\n\n"
+                return f"[{self.get_element_representation(el)}]({el.attrs['type']})<{el.attrs['element_id']}>\n\n"
+            
+            def convert_textarea(self, el: Tag, text, convert_as_inline):
+                logger.info(f"Converting textarea {str(el)}")
+                
+                if 'element_id' not in el.attrs:
+                    return ''
+                return f"[{self.get_element_representation(el)}](textarea)<{el.attrs['element_id']}>\n\n"
             
         markdown = CTAMarkdownConverter().convert(self.page.content())
 
