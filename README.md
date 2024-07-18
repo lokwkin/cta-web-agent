@@ -6,7 +6,10 @@ Many of the automated web bots on the market require users to predefine the XPat
 
 Since the rise of LLMs, and especially with the advances in vision understanding, some solutions have been developed to combine computer vision with LLM to simulate how humans see, digest, and interact with browsers. However, these solutions often require heavy token usage costs and take a relatively long time to process. And more importantly, difficult to be deployed locally.
 
-Therefore, this project aims to reduce both cost and processing time. Instead of feeding in the screenshots and HTML into LLMs, it pre-masks unnecessary information before prompting. *It extracts only the Call-To-Action elements from the webpage, converting HTML to markdown while preserving critical information, then followed by prompting LLM agents for agentic reasoning and actions. This approach uses purely text-to-text models and avoids computer vision models, and processes only the necessary data, thereby reducing cost and processing time.* 
+Therefore, this project aims to reduce both cost and processing time. Instead of feeding in the screenshots and HTML into LLMs, it pre-masks unnecessary information before prompting. *It extracts only the Call-To-Action elements from the webpage, converting HTML to markdown while preserving critical information, then followed by prompting LLM agents for agentic reasoning and actions. This approach uses purely text-to-text models and avoids image-understanding models, and processes only the necessary data, thereby reducing cost and processing time.* 
+
+## Limitations
+Due to the nature that it uses only text-to-text models, it is expected that it can at best cover most agentic web tasks that doesn't involve images or other non-text information processing.
 
 ## Usage
 ```
@@ -17,7 +20,6 @@ python src/main.py https://github.com 'Check the price per month for a team plan
 ```
 
 ## TODOssss (welcome any comments, suggestions or even contributions!)
-- Keep developing until it's able to run all the target test tasks I have on hand :D
 - Models & Prompting
     - Preprocess
         - Masking out too detailed text for smaller prompt input
@@ -40,5 +42,6 @@ python src/main.py https://github.com 'Check the price per month for a team plan
     - Dockerize for easy deployment
     - Simple frontend to control
 - Testing
+    - Succesfully run all the test tasks I have on hand :D
     - Apply evalautions like "WebArena" / "AutoWebBench"
 
