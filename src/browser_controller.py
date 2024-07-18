@@ -57,14 +57,15 @@ class BrowserController:
             logger.info(f"Found element: {(target.first.evaluate('el => el.outerHTML') )}")
 
             # Type the text
+            logger.info(f"Entering text: {action.action_params['text']}")
             target.type(action.action_params['text'])
             
-            if action.action_params.get('press_enter', False):
-                target.press('Enter')
-
             # Wait for the browser to load react
-            logger.info(f"Typed, awaiting browser load...")
-            self.page.wait_for_timeout(3000)
+            if action.action_params.get('press_enter', False):
+                logger.info(f"Pressing enter...")
+                target.press('Enter')
+                logger.info(f"Awaiting browser load...")
+                self.page.wait_for_timeout(3000)
 
         elif action.action == 'FINISH':
             logger.info(f"Finishing the task with output {str(action.action_params['output'])}")
@@ -118,11 +119,10 @@ class BrowserController:
             def convert_input(self, el: Tag, text, convert_as_inline):
                 if 'element_id' not in el.attrs:
                     return ''
-                return f"[{self.get_element_representation(el)}]({el.attrs['type']})<{el.attrs['element_id']}>\n\n"
+                element_type = el.attrs['type'] if 'type' in el.attrs else 'input'
+                return f"[{self.get_element_representation(el)}]({element_type})<{el.attrs['element_id']}>\n\n"
             
-            def convert_textarea(self, el: Tag, text, convert_as_inline):
-                logger.info(f"Converting textarea {str(el)}")
-                
+            def convert_textarea(self, el: Tag, text, convert_as_inline):                
                 if 'element_id' not in el.attrs:
                     return ''
                 return f"[{self.get_element_representation(el)}](textarea)<{el.attrs['element_id']}>\n\n"
