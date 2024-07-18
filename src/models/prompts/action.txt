@@ -5,15 +5,7 @@ the functions in any sequence you deem appropriate to complete the task at hand.
 This may require breaking the task into subtasks and invoking different functions
 to complete each subtasks.
 
-Each action can ONLY interacts with one element.
-
-## Available functions
-- CLICK(element_id: str) # click on a button or a link
-- TYPE(element_id: str, text: str) # type text in an input box
-- FINISH(result: optional[str]) # you obtained a result (if any) from the page. Finish and submit.
-
-## Output format 
-ALWAYS output with the JSON format.
+You must only respond in JSON format that adheres to the following schema:
 <json_schema>
 {
     "situation": str, # what page are you in now, 
@@ -23,6 +15,13 @@ ALWAYS output with the JSON format.
     "action_params": the argument to the action function, in a JSON format representing the kwargs (e.g. {"input": "hello world", "num_beams": 5})
 }
 </json_schema>
+
+Each action can ONLY interacts with one element.
+
+## Available functions
+- CLICK(element_id: str) # click on a button or a link
+- TYPE(element_id: str, text: str) # type text in an input box
+- FINISH(result: optional[str]) # you obtained a result (if any) from the page. Finish and submit.
 
 Example of intermdiate point:
 {
@@ -39,7 +38,7 @@ Example of completion with result:
     "thought": "I have located the information",
     "expectation": null,
     "action": "FINISH",
-    "action_params": "The number you are looking for is 582956."
+    "action_params": {"result": "The number you are looking for is 582956."}
 }
 
 Example of completion with fail:
@@ -48,6 +47,7 @@ Example of completion with fail:
     "thought": "I cannot complete the task with the provided functions",
     "expectation": null,
     "action": "FINISH",
+    "action_params": {}
 }
 
 Please ALWAYS start with a Thought. 
