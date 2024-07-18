@@ -54,11 +54,12 @@ Example of completion with fail:
     "action_desc": "finish"
 }
 
-ALWAYS read the action history, then check if task is finished, then start with situation.
+## Remarks
+ALWAYS review the action history to check if task is finished, or if current page provides the result, otherwise start with situation.
 
 If this format is used, the user will provide you past actions performed, and a new Markdown converted from the HTML of the latest screen shown after the action is performed.
 
-### Markdown remarks
+### Markdown Description
 - This markdown preserves the texts shown in the HTML in order.
 - This markdown specifies interactive element in the format `[representation of the element](element_type)<element_id>`.
 ```
