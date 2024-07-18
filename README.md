@@ -19,7 +19,9 @@ export OPENAI_API_KEY=<OPENAI_API_KEY>
 python src/main.py https://github.com 'Check the price per month for a team plan'
 ```
 
-## TODOssss (welcome any comments, suggestions or even contributions!)
+## TODOssss 
+**(welcome any comments, suggestions or even contributions😀)**
+- Keep developing and fine-tuning until it succesfully run all the basic flow task targets I have on hand :D
 - Models & Prompting
     - Preprocess
         - Masking out too detailed text for smaller prompt input
@@ -42,6 +44,5 @@ python src/main.py https://github.com 'Check the price per month for a team plan
     - Dockerize for easy deployment
     - Simple frontend to control
 - Testing
-    - Succesfully run all the test tasks I have on hand :D
     - Apply evalautions like "WebArena" / "AutoWebBench"
 
