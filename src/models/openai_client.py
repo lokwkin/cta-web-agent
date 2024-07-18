@@ -1,14 +1,14 @@
 from colorama import Fore, Style
-from dataclasses import dataclass
 from typing import Optional
 import os
 import json
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import Optional
 from openai import OpenAI, DefaultHttpxClient
 import pystache
 import logging
 import os
+import json_repair
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -48,7 +48,6 @@ class OpenAIClient():
                 with open(f"./src/models/prompts/{filename}", "r") as file:
                     logger.info(f"Loading template: {filename[:-4]}")
                     self.templates[filename[:-4]] = file.read()
-        
 
     def prompt_templated(self, template: str, params: dict):
         logger.info('self.templates' + str(self.templates))
@@ -76,11 +75,9 @@ class OpenAIClient():
             )
             logger.info(f"{Fore.BLUE}[response] {str(response)}{Style.RESET_ALL}")
 
-            json_data = json.loads(response.choices[0].message.content)
+            json_data = json_repair.loads(response.choices[0].message.content)
             
             thought_action = ReActOutput(**json_data)
-            
-            logger.info(f"{Fore.BLUE}[ReActOutput] {str(thought_action)}{Style.RESET_ALL}")
             
             return thought_action
         except json.JSONDecodeError as e:
