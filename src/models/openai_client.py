@@ -36,8 +36,7 @@ class OpenAIClient(BaseLLMClient):
                 max_tokens=prompt_input.max_tokens,
                 response_format={"type":"json_object" },
             )
-        print(response)
-            
+
         return LLMResponse(
             request=prompt_input,
             response_str=response.choices[0].message.content,
