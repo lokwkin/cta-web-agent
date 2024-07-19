@@ -18,11 +18,11 @@ def run(url: str, task: str, playwright):
 
     # Initialize LLM client
     log_path = f"./prompt_logs/{utils.normalize_url(url)}"
-    match os.environ.get("USE_MODEL_PROVIDER"):
-        case "ollama":
-            llm_client = OllamaClient(log_path=log_path)
+    match os.environ.get("USE_MODEL_PROVIDER", "openai"):
         case "openai":
             llm_client = OpenAIClient(log_path=log_path)
+        case "ollama":
+            llm_client = OllamaClient(log_path=log_path)
     
     # Setup browser
     browser = playwright.chromium.launch(headless=False)
