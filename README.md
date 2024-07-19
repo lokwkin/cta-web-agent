@@ -42,7 +42,8 @@ python src/main.py https://github.com 'Check the price per month for a team plan
     - Captcha handling
 - Engineering
     - Dockerize for easy deployment
-    - Simple frontend to control
+    - Simple API to control
+    - Basic Frontend display
 - Testing
     - Apply evalautions like "WebArena" / "AutoWebBench"
 
