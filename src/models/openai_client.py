@@ -27,23 +27,20 @@ class OpenAIClient(BaseLLMClient):
     def _request(self, prompt_input: LLMInput) -> LLMResponse:
         ts = time.time()
         response = self.client.chat.completions.create(
-                model="gpt-4o-mini",
+                model="gpt-3.5-turbo",
                 messages=[
                     {"role": "system", "content": prompt_input.system_message},
                     {"role": "user", "content": prompt_input.user_message},
-                    {"role": "assistant", "content": "{"}
                 ],
                 temperature=prompt_input.temperature,
                 max_tokens=prompt_input.max_tokens,
+                response_format={"type":"json_object" },
             )
-        
-        response_fix = response.choices[0].message.content
-        if not response_fix.startswith('{'):
-            response_fix = '{' + response_fix
+        print(response)
             
         return LLMResponse(
             request=prompt_input,
-            raw_response=response_fix,
+            response_str=response.choices[0].message.content,
             time_used=time.time() - ts,
             usage=LLMTokenUsage(
                 input_token=response.usage.prompt_tokens,

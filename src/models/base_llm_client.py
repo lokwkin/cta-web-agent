@@ -28,7 +28,7 @@ class LLMTokenUsage(BaseModel):
     
 class LLMResponse(BaseModel):
     request: LLMInput
-    raw_response: str
+    response_str: str
     time_used: float
     usage: LLMTokenUsage
     
@@ -77,15 +77,15 @@ class BaseLLMClient():
                 logger.debug(f"{Fore.CYAN}[user_message] {json.dumps(prompt_input.user_message)}{Style.RESET_ALL}")
                 
                 llm_response = self._request(prompt_input)
-                logger.debug(f"{Fore.BLUE}[response_message] {str(llm_response.raw_response)}{Style.RESET_ALL}")
+                logger.debug(f"{Fore.BLUE}[response_message] {str(llm_response.response_str)}{Style.RESET_ALL}")
                 
                 f.write("\n\n>>>>>>>>>>>>>>>> LLM RESPONSE >>>>>>>>>>>>>>>>\n\n")
-                f.write(llm_response.raw_response)
+                f.write(llm_response.response_str)
 
             try:
-                response_dict = json.loads(llm_response.raw_response)
+                response_dict = json.loads(llm_response.response_str)
             except json.JSONDecodeError as e:
-                response_dict = json_repair.loads(llm_response.raw_response)
+                response_dict = json_repair.loads(llm_response.response_str)
                 if response_dict == '': # failed to fix json
                     raise e
 
