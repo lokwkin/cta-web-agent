@@ -21,9 +21,13 @@ python src/main.py 'https://github.com' 'Check the price per month for a team pl
 ## Env Vars
 ```sh
 USE_MODEL_PROVIDER=ollama # "ollama" / "openai"
+
+# If you use OpenAI
 OPENAI_API_KEY=<Your own API key>
 OPENAI_MODEL='gpt-3.5-turbo'
 OPENAI_PROXY_URL='http://123.234.345.456:8888' # Proxy URL to connect OpenAI> # e.g.  Leave bank if not needed
+
+# If you use Ollama
 OLLAMA_API_URL='http://localhost:11434/api/generate'
 OLLAMA_MODEL=llama3
 ```
