@@ -51,6 +51,7 @@ OLLAMA_MODEL=llama3
     - Captcha handling
 - Engineering
     - Dockerize for easy deployment
-    - Simple frontend to control
+    - Simple API to control
+    - Basic Frontend display
 - Testing
     - Apply evalautions like "WebArena" / "AutoWebBench"

@@ -2,6 +2,7 @@ import os
 from playwright.sync_api import sync_playwright, Page, Browser
 from colorama import Fore, Style
 from dotenv import load_dotenv
+from models.base_llm_client import ReActOutput
 from models.ollama_client import OllamaClient
 from models.openai_client import OpenAIClient
 from browser_controller import BrowserController
@@ -27,7 +28,7 @@ def run(url: str, task: str, playwright):
     # Setup browser
     browser = playwright.chromium.launch(headless=False)
     browserctl = BrowserController(browser)
-    action_histories = []
+    action_histories: list[ReActOutput] = []
 
     # Start navigation
     browserctl.navigate(url)
