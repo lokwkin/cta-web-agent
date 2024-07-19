@@ -1,6 +1,8 @@
+import os
 from playwright.sync_api import sync_playwright, Page, Browser
 from colorama import Fore, Style
 from dotenv import load_dotenv
+from models.ollama_client import OllamaClient
 from models.openai_client import OpenAIClient
 from browser_controller import BrowserController
 import argparse
@@ -13,10 +15,16 @@ logger.setLevel(logging.DEBUG)
 load_dotenv()
 
 def run(url: str, task: str, playwright):
+
+    # Initialize LLM client
+    log_path = f"./prompt_logs/{utils.normalize_url(url)}"
+    match os.environ.get("USE_MODEL_PROVIDER"):
+        case "ollama":
+            llm_client = OllamaClient(log_path=log_path)
+        case "openai":
+            llm_client = OpenAIClient(log_path=log_path)
     
-    llm_client = OpenAIClient(log_path=f"./prompt_logs/{utils.normalize_url(url)}")
-    
-    # Setup    
+    # Setup browser
     browser = playwright.chromium.launch(headless=False)
     browserctl = BrowserController(browser)
     action_histories = []

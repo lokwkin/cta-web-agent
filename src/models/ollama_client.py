@@ -10,12 +10,12 @@ logger.setLevel(logging.INFO)
 class OllamaClient(BaseLLMClient):
     def __init__(self, log_path: str = './prompt_logs'):
         super().__init__(log_path)
-        self.url=os.environ.get("OLLAMA_API_URL")
+        self.url=os.environ.get("OLLAMA_API_URL", "http://localhost:11434/api/generate")
 
     def _request(self, prompt_input: LLMInput) -> LLMResponse:
         ts = time.time()
         raw_response = requests.post(self.url, json={
-            "model": "phi3:mini-128k",
+            "model": os.environ.get("OLLAMA_MODEL", "llama3"),
             "prompt": prompt_input.user_message,
             "system": prompt_input.system_message,
             "format": "json",
