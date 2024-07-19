@@ -1,4 +1,3 @@
-# cta-web-agent
 **cta-web-agent** is an experimental project targetted to build an automated web agentic bot that performs user tasks in a fast and cost-effectively manner, by pre-masking and preserving only Call-To-Action elements and using purely text-to-text models. By doing this, it aims to be easily deployable in a local environment and be able to largely scale out with a relatively low cost.
 
 ## Background
@@ -19,6 +18,16 @@ export OPENAI_API_KEY=<OPENAI_API_KEY>
 python src/main.py https://github.com 'Check the price per month for a team plan'
 ```
 
+## Env Vars
+```
+USE_MODEL_PROVIDER=ollama # "ollama" / "openai"
+OPENAI_API_KEY=<Your own API key>
+OPENAI_MODEL='gpt-3.5-turbo'
+OPENAI_PROXY_URL=http://123.234.345.456:8888 # Proxy URL to connect OpenAI> # e.g.  Leave bank if not needed
+OLLAMA_API_URL=http://localhost:11434/api/generate
+OLLAMA_MODEL=llama3
+```
+
 ## TODOssss 
 **(welcome any comments, suggestions or even contributions😀)**
 - Keep developing and fine-tuning until it succesfully run all the basic flow task targets I have on hand :D
@@ -28,7 +37,7 @@ python src/main.py https://github.com 'Check the price per month for a team plan
         - Re-construct of HTML to markdown
     - Models adaption
         - Groq client
-        - Ollama client / Other smaller size models
+        - Other smaller size models
     - Prompting improve
         - Separate understanding of page and decision making
         - Auto fixing json
@@ -46,4 +55,3 @@ python src/main.py https://github.com 'Check the price per month for a team plan
     - Basic Frontend display
 - Testing
     - Apply evalautions like "WebArena" / "AutoWebBench"
-
