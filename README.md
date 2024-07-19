@@ -15,7 +15,7 @@ Due to the nature that it uses only text-to-text models, it is expected that it 
 pip install -r requirements.txt
 
 export OPENAI_API_KEY=<OPENAI_API_KEY>
-python src/main.py https://github.com 'Check the price per month for a team plan'
+python src/main.py 'https://github.com' 'Check the price per month for a team plan'
 ```
 
 ## Env Vars
@@ -23,8 +23,8 @@ python src/main.py https://github.com 'Check the price per month for a team plan
 USE_MODEL_PROVIDER=ollama # "ollama" / "openai"
 OPENAI_API_KEY=<Your own API key>
 OPENAI_MODEL='gpt-3.5-turbo'
-OPENAI_PROXY_URL=http://123.234.345.456:8888 # Proxy URL to connect OpenAI> # e.g.  Leave bank if not needed
-OLLAMA_API_URL=http://localhost:11434/api/generate
+OPENAI_PROXY_URL='http://123.234.345.456:8888' # Proxy URL to connect OpenAI> # e.g.  Leave bank if not needed
+OLLAMA_API_URL='http://localhost:11434/api/generate'
 OLLAMA_MODEL=llama3
 ```
 
