@@ -1,4 +1,5 @@
-**cta-web-agent** is an experimental project targetted to build an automated web agentic bot that performs user tasks in a fast and cost-effectively manner, by pre-masking and preserving only Call-To-Action elements and using purely text-to-text models. By doing this, it aims to be easily deployable in a local environment and be able to largely scale out with a relatively low cost.
+# CTAWebAgent
+**cta-web-agent** is an experimental project targetted to build an autonomous agentic web bot that performs user tasks in a fast and cost-effectively manner, by pre-masking and preserving only Call-To-Action elements and using purely text-to-text models. By doing this, it aims to be easily deployable in a local environment and be able to largely scale out with a relatively low cost.
 
 ## Background
 Many of the automated web bots on the market require users to predefine the XPath or CSS Selectors of the page elements they want to extract. While this approach may be straightforward and accurate, it cannot handle website layout updates, cannot deal with previously unseen websites, and most importantly, requires human effort to set up.
@@ -33,7 +34,7 @@ OLLAMA_MODEL=llama3
 ```
 
 ## TODOssss 
-**(welcome any comments, suggestions or even contributions😀)**
+- **Welcome any comments, suggestions or even contributions** 😀
 - Keep developing and fine-tuning until it succesfully run all the basic flow task targets I have on hand :D
 - Models & Prompting
     - Preprocess
