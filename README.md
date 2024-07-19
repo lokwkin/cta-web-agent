@@ -11,7 +11,7 @@ Therefore, this project aims to reduce both cost and processing time. Instead of
 Due to the nature that it uses only text-to-text models, it is expected that it can at best cover most agentic web tasks that doesn't involve images or other non-text information processing.
 
 ## Usage
-```
+```sh
 pip install -r requirements.txt
 
 export OPENAI_API_KEY=<OPENAI_API_KEY>
@@ -19,7 +19,7 @@ python src/main.py https://github.com 'Check the price per month for a team plan
 ```
 
 ## Env Vars
-```
+```sh
 USE_MODEL_PROVIDER=ollama # "ollama" / "openai"
 OPENAI_API_KEY=<Your own API key>
 OPENAI_MODEL='gpt-3.5-turbo'
