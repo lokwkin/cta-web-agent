@@ -45,7 +45,6 @@ OLLAMA_MODEL=llama3
         - Other smaller size models
     - Prompting improve
         - Separate understanding of page and decision making
-        - Auto fixing json
         - Apply Tree of Thought
 - Browser interaction
     - Support more input types (dropdown / checkbox / radio button)
