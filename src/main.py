@@ -1,6 +1,5 @@
 import os
-from playwright.sync_api import sync_playwright, Page, Browser
-from colorama import Fore, Style
+from playwright.sync_api import sync_playwright
 from dotenv import load_dotenv
 from models.base_llm_client import ReActOutput
 from models.ollama_client import OllamaClient

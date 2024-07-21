@@ -4,11 +4,9 @@ from typing import Optional
 import os
 import json
 from pydantic import BaseModel
-from typing import Optional
 import pystache
 import logging
 import time
-import os
 import json_repair
 
 logger = logging.getLogger(__name__)

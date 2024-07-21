@@ -1,8 +1,6 @@
-from typing import Literal
 from playwright.sync_api import Page, Browser
 from bs4 import Tag
-from colorama import Fore, Style
-from markdownify import markdownify as md, MarkdownConverter
+from markdownify import markdownify as MarkdownConverter
 import uuid
 import logging
 from models.base_llm_client import ReActOutput
@@ -28,11 +26,11 @@ class BrowserController:
 
     def prepare_markdown(self) -> str:
         # Assign unique element_id to all elements
-        logger.debug(f"Assigning Element IDs to DOM")
+        logger.debug("Assigning Element IDs to DOM")
         self._dom_assign_element_id()
 
         # Convert the page to markdown preserving neccessary elements
-        logger.debug(f"Converting HTML to Markdown...")
+        logger.debug("Converting HTML to Markdown...")
         markdown = self._convert_to_markdown()
         return markdown
 
@@ -48,7 +46,7 @@ class BrowserController:
             target.click()
 
             # Wait for the browser to load react
-            logger.info(f"Clicked, awaiting browser load...")
+            logger.info("Clicked, awaiting browser load...")
             self.page.wait_for_timeout(3000)
 
         elif action.action == 'TYPE':
@@ -63,9 +61,9 @@ class BrowserController:
 
             # Wait for the browser to load react
             if action.action_params.get('press_enter', False):
-                logger.info(f"Pressing enter...")
+                logger.info("Pressing enter...")
                 target.press('Enter')
-                logger.info(f"Awaiting browser load...")
+                logger.info("Awaiting browser load...")
                 self.page.wait_for_timeout(3000)
 
         elif action.action == 'FINISH':
