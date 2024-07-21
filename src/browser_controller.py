@@ -1,6 +1,6 @@
 from playwright.sync_api import Page, Browser
 from bs4 import Tag
-from markdownify import markdownify as MarkdownConverter
+from markdownify import MarkdownConverter
 import uuid
 import logging
 from models.base_llm_client import ReActOutput
