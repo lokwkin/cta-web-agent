@@ -7,10 +7,11 @@ from models.base_llm_client import BaseLLMClient, LLMInput, LLMResponse, LLMToke
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 class OllamaClient(BaseLLMClient):
     def __init__(self, log_path: str = './prompt_logs'):
         super().__init__(log_path)
-        self.url=os.environ.get("OLLAMA_API_URL", "http://localhost:11434/api/generate")
+        self.url = os.environ.get("OLLAMA_API_URL", "http://localhost:11434/api/generate")
 
     def _request(self, prompt_input: LLMInput) -> LLMResponse:
         ts = time.time()
@@ -21,7 +22,7 @@ class OllamaClient(BaseLLMClient):
             "format": "json",
             "stream": False
         })
-        
+
         raw_response.raise_for_status()
         response = raw_response.json()
 
