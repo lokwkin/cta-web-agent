@@ -91,8 +91,9 @@ class BrowserController:
                     return el.attrs['aria-label']
                 if 'placeholder' in el.attrs:
                     return el.attrs['placeholder']
-                if len(el.text.strip()) > 0:
-                    return el.text.strip()
+                texts = el.get_text(' ', strip=True)
+                if len(texts) > 0:
+                    return texts
                 if len(el.find_all('img')) > 0:
                     return ','.join([img.attrs['alt'] for img in el.find_all('img')])
                 return None
