@@ -1,7 +1,8 @@
 import os
-from playwright.sync_api import sync_playwright
+from playwright.sync_api import sync_playwright, Playwright
 from dotenv import load_dotenv
 from models.base_llm_client import ReActOutput
+from models.groq_client import GroqClient
 from models.ollama_client import OllamaClient
 from models.openai_client import OpenAIClient
 from browser_controller import BrowserController
@@ -15,7 +16,7 @@ logger.setLevel(logging.DEBUG)
 load_dotenv()
 
 
-def run(url: str, task: str, playwright):
+def run(url: str, task: str, playwright: Playwright):
 
     # Initialize LLM client
     log_path = f"./prompt_logs/{utils.normalize_url(url)}"
@@ -24,6 +25,10 @@ def run(url: str, task: str, playwright):
             llm_client = OpenAIClient(log_path=log_path)
         case "ollama":
             llm_client = OllamaClient(log_path=log_path)
+        case "groq":
+            llm_client = GroqClient(log_path=log_path)
+        case _:
+            raise ValueError("Invalid model provider")
 
     # Setup browser
     browser = playwright.chromium.launch(headless=False)
