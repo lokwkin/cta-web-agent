@@ -1,5 +1,5 @@
-# LowCostWebAgent
-**cta-web-agent** is an experimental project desgined to build a **fast and cost-effective** autonomous web agentic bot. It pre-masks and preserves only Call-To-Action elements and **uses only text-to-text models** for processing. By doing this, it aims be largely-scalable with a relatively low cost and be **deployable in a private or local environment**.
+# CTAWebAgent
+**cta-web-agent** is an experimental project desgined to build a ***fast and cost-effective*** autonomous web agentic bot. It pre-masks and preserves only Call-To-Action elements and ***uses only text-to-text models*** for processing. By doing this, it aims be largely-scalable with a relatively low cost and be ***deployable in a private or local environment***.
 
 ## Background
 Many of the automated web bots on the market require users to predefine the XPath or CSS Selectors of the page elements they want to extract. While this approach may be straightforward and accurate, it cannot handle website layout updates, cannot deal with previously unseen websites, and most importantly, requires human effort to set up.
