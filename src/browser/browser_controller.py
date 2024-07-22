@@ -55,4 +55,3 @@ class BrowserController:
 
         elif action.action == 'FINISH':
             logger.info(f"Finishing the task with output {str(action.action_params['output'])}")
-

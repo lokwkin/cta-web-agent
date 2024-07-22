@@ -1,21 +1,20 @@
 from playwright.sync_api import Page
 import logging
-from bs4 import BeautifulSoup, Tag
+from bs4 import Tag
 from markdownify import MarkdownConverter
 import uuid
-
-from preprocessing.html_chunking import chunk_dom
-
+from preprocessing.html_chunking import chunk_html
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
+
 class Preprocessor():
-        
+
     def __init__(self, page: Page) -> None:
         self.page = page
         pass
-    
+
     def prepare_markdown(self) -> str:
         # Assign unique element_id to all elements
         logger.debug("Assigning Element IDs to DOM")
@@ -87,7 +86,7 @@ class Preprocessor():
         markdown = CTAMarkdownConverter().convert(self.page.content())
 
         return markdown.strip()
-    
+
     def split_and_process(self, provider: str, model: str, max_token: int):
-        chunks = chunk_dom(self.page.content(), provider, model, max_token)
+        chunks = chunk_html(self.page.content(), provider, model, max_token)
         return chunks
