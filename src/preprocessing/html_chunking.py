@@ -1,8 +1,12 @@
-from bs4 import BeautifulSoup, Tag
+from bs4 import Tag
 import tiktoken
 
 
 def estimate_tokens(text, provider: str, model: str) -> int:
+    """
+    This function estimates the number of tokens in a given text based on
+    the specified provider and model.
+    """
     if provider.lower() == "openai":
         try:
             encoding = tiktoken.encoding_for_model(model)
@@ -26,7 +30,11 @@ def estimate_tokens(text, provider: str, model: str) -> int:
         return len(text) // 4
 
 
-def chunk_html(html, provider: str, model: str, max_token: int) -> list[Tag]:
+def chunk_html(dom: Tag, provider: str, model: str, max_token: int) -> list[Tag]:
+    """
+    This function chunks an HTML document into smaller parts based on a maximum token limit
+    according to the model used.
+    """
 
     def count_descendants(node: Tag):
         return len(node.find_all())
@@ -46,5 +54,4 @@ def chunk_html(html, provider: str, model: str, max_token: int) -> list[Tag]:
                 chunks = chunks + traverse(child, indent + "    ")
         return chunks
 
-    soup = BeautifulSoup(html, 'html.parser')
-    return traverse(soup.html)
+    return traverse(dom)

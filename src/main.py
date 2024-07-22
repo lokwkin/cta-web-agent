@@ -20,7 +20,7 @@ load_dotenv()
 def run(url: str, task: str, playwright: Playwright):
 
     # Initialize LLM client
-    log_path = f"./prompt_logs/{utils.normalize_url(url)}"
+    log_path = f"./prompt_logs/{utils.extract_domain(url)}"
     provider = os.environ.get("USE_MODEL_PROVIDER", "openai")
     model = os.environ.get("USE_MODEL")
     match provider:
@@ -43,7 +43,7 @@ def run(url: str, task: str, playwright: Playwright):
 
     while True:
         preprocessor = Preprocessor(browserctl.get_page_object())
-        chunks = preprocessor.split_and_process(provider, model, 8192)
+        chunks = preprocessor.prepare_necessary_chunks(provider, model, 8192)
 
         markdown = preprocessor.prepare_markdown()
 

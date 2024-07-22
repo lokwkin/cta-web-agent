@@ -1,4 +1,10 @@
 import re
+import tldextract
+
+
+def extract_domain(url):
+    ext = tldextract.extract(url)
+    return f"{ext.subdomain}.{ext.domain}.{ext.suffix}"
 
 
 def normalize_url(url):
