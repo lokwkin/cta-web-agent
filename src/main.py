@@ -5,7 +5,7 @@ from models.base_llm_client import ReActOutput
 from models.groq_client import GroqClient
 from models.ollama_client import OllamaClient
 from models.openai_client import OpenAIClient
-from browser_controller import BrowserController
+from browser.browser_controller import BrowserController
 import argparse
 import utils
 import logging

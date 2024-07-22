@@ -9,6 +9,8 @@ import logging
 import time
 import json_repair
 
+from base_models import ReActOutput
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
 
@@ -32,15 +34,6 @@ class LLMResponse(BaseModel):
     response_str: str
     time_used: float
     usage: LLMTokenUsage
-
-
-class ReActOutput(BaseModel):
-    situation: Optional[str]
-    options: Optional[str]
-    thought: Optional[str]
-    action: str
-    action_params: Optional[dict]
-    action_desc: Optional[str]
 
 
 class BaseLLMClient():

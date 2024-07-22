@@ -28,5 +28,3 @@ def estimate_tokens(text, provider: str, model: str):
     else:
         # Fallback for unsupported providers
         return len(text) // 4
-
-print(estimate_tokens("Hello, world!", "openai", "gpt-3.5-turbo"))  # 3
