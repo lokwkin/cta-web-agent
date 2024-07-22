@@ -16,25 +16,18 @@ Due to the nature that it uses only text-to-text models, it is expected that it 
 pip install -r requirements.txt
 
 export OPENAI_API_KEY=<OPENAI_API_KEY>
-python src/main.py 'https://github.com' 'Check the price per month for a team plan'
+python src/main.py 'https://google.com' 'check todays weather in hong kong'
 ```
 
 ## Env Vars
 ```sh
 USE_MODEL_PROVIDER=ollama # "ollama" / "openai" / "groq"
+USE_MODEL=llama3
 
-# If you use OpenAI
-OPENAI_API_KEY=<Your own API key>
-OPENAI_MODEL='gpt-3.5-turbo'
-OPENAI_PROXY_URL='http://123.234.345.456:8888' # Proxy URL to connect OpenAI> # e.g.  Leave bank if not needed
-
-# If using Ollama
-OLLAMA_API_URL='http://localhost:11434/api/generate'
-OLLAMA_MODEL=llama3
-
-# If using Groq
-GROQ_API_KEY=<Your own API key>
-GROQ_MODEL='llama3-8b-8192'
+OPENAI_API_KEY=<Your own API key> # If using OpenAI
+OPENAI_PROXY_URL='http://123.234.345.456:8888' # Proxy URL to connect OpenAI, optional
+OLLAMA_API_URL='http://localhost:11434/api/generate'    # If using Ollama
+GROQ_API_KEY=<Your own API key> # If using Groq
 ```
 
 ## TODOssss 

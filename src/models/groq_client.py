@@ -21,7 +21,7 @@ class GroqClient(BaseLLMClient):
         ts = time.time()
 
         response = self.client.chat.completions.create(
-            model=os.environ.get("GROQ_MODEL", "llama3-8b-8192"),
+            model=os.environ.get("USE_MODEL", "llama3-8b-8192"),
             messages=[
                 {"role": "system", "content": prompt_input.system_message},
                 {"role": "user", "content": prompt_input.user_message},

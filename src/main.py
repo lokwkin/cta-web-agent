@@ -7,6 +7,7 @@ from models.ollama_client import OllamaClient
 from models.openai_client import OpenAIClient
 from browser.browser_controller import BrowserController
 import argparse
+from preprocessing.preprocess import Preprocessor
 import utils
 import logging
 
@@ -20,7 +21,9 @@ def run(url: str, task: str, playwright: Playwright):
 
     # Initialize LLM client
     log_path = f"./prompt_logs/{utils.normalize_url(url)}"
-    match os.environ.get("USE_MODEL_PROVIDER", "openai"):
+    provider = os.environ.get("USE_MODEL_PROVIDER", "openai")
+    model = os.environ.get("USE_MODEL")
+    match provider:
         case "openai":
             llm_client = OpenAIClient(log_path=log_path)
         case "ollama":
@@ -39,7 +42,10 @@ def run(url: str, task: str, playwright: Playwright):
     browserctl.navigate(url)
 
     while True:
-        markdown = browserctl.prepare_markdown()
+        preprocessor = Preprocessor(browserctl.get_page_object())
+        chunks = preprocessor.split_and_process(provider, model, 8192)
+
+        markdown = preprocessor.prepare_markdown()
 
         # Prompt LLM for next action
         logger.debug('Prompting LLM for next action...')

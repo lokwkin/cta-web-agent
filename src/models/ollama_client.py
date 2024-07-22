@@ -16,7 +16,7 @@ class OllamaClient(BaseLLMClient):
     def _request(self, prompt_input: LLMInput) -> LLMResponse:
         ts = time.time()
         raw_response = requests.post(self.url, json={
-            "model": os.environ.get("OLLAMA_MODEL", "llama3"),
+            "model": os.environ.get("USE_MODEL", "llama3"),
             "prompt": prompt_input.user_message,
             "system": prompt_input.system_message,
             "format": "json",
