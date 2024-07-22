@@ -33,8 +33,8 @@ OLLAMA_API_URL='http://localhost:11434/api/generate'
 OLLAMA_MODEL=llama3
 
 # If using Groq
-OPENAI_API_KEY=<Your own API key>
-OPENAI_MODEL='llama3-8b-8192'
+GROQ_API_KEY=<Your own API key>
+GROQ_MODEL='llama3-8b-8192'
 ```
 
 ## TODOssss 
@@ -42,24 +42,22 @@ OPENAI_MODEL='llama3-8b-8192'
 - Keep developing and fine-tuning until it succesfully run all the basic flow task targets I have on hand :D
 - Models & Prompting
     - Preprocess
-        - Masking out too detailed text for smaller prompt input
-        - Re-construct of HTML to markdown
-    - Models adaption
-        - Groq client
-        - Other smaller size models
+        - Split into smaller chunks of HTMLs
+        - Masking out too detailed text
+        - Logic to better preserve and representation of necessary elements in HTML to markdown
     - Prompting improve
         - Separate understanding of page and decision making
         - Apply Tree of Thought
 - Browser interaction
     - Support more input types (dropdown / checkbox / radio button)
     - Support hovering
+    - Inspect specific element to get more detail
     - Allow specific URL navigation as an action
     - Explicitly handle google search as an action
-    - Inspect specific element to get more detail
     - Captcha handling
 - Engineering
     - Dockerize for easy deployment
     - Simple API to control
-    - Basic Frontend display
+    - Basic Frontend display for Demo & Evaluation
 - Testing
-    - Apply evalautions like "WebArena" / "AutoWebBench"
+    - Apply evalautions sets like "WebArena" / "AutoWebBench"
