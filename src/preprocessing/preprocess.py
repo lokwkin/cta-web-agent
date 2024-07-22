@@ -14,7 +14,7 @@ def estimate_tokens(text, provider: str, model: str):
     
     elif provider.lower() in ["ollama", "groq"]:
         # Using a BPE tokenizer for LLaMA-like models
-        if model == "llama3":
+        if model.startswith("llama3"):
             try:
                 tokenizer = Tokenizer(BPE())
                 tokenizer.pre_tokenizer = Whitespace()
