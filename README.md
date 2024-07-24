@@ -42,22 +42,24 @@ GROQ_MODEL='llama3-8b-8192'
 - Keep developing and fine-tuning until it succesfully run all the basic flow task targets I have on hand :D
 - Models & Prompting
     - Preprocess
+        - Apply mechanism or ML models to determine meaningful elements
         - Split into smaller chunks of HTMLs
-        - Masking out too detailed text
-        - Logic to better preserve and representation of necessary elements in HTML to markdown
+        - Improve on representation of markdown that better preserve information while easy for LLM to understand
     - Prompting improve
-        - Separate understanding of page and decision making
-        - Apply Tree of Thought
-- Browser interaction
-    - Support more input types (dropdown / checkbox / radio button)
-    - Support hovering
-    - Inspect specific element to get more detail
-    - Allow specific URL navigation as an action
-    - Explicitly handle google search as an action
-    - Captcha handling
+        - Separate understanding of page and decision making 
+- Browsing
+    - Page loading
+        - Render webpage more completely
+        - Captcha handling
+    - Interactions
+        - Support more element types (dropdown / checkbox / radio button / etc)
+        - Support hovering
+        - Allow specific URL navigation as an action
+        - Inspect specific element to get more detail
+        - Explicitly handle google search as an action (?)
 - Engineering
     - Dockerize for easy deployment
     - Simple API to control
     - Basic Frontend display for Demo & Evaluation
 - Testing
-    - Apply evalautions sets like "WebArena" / "AutoWebBench"
+    - Apply evalautions sets
